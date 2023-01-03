@@ -1,9 +1,10 @@
+using EmployeeManagement.Base;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace EmployeeManagement
 {
-    public class LoginUITest
+    public class LoginUITest : AutomationWrapper
     {
         IWebDriver driver;
         [SetUp]
