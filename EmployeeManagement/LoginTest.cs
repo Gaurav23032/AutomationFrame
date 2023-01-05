@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Base;
+using EmployeeManagement.Utilities;
 using NUnit.Framework.Constraints;
 using OpenQA.Selenium;
 using System;
@@ -15,52 +16,23 @@ namespace EmployeeManagement
         [Test]
         public void ValidLoginTest()
         {
-            driver.FindElement(By.Name("username")).SendKeys("Admin");
-            driver.FindElement(By.Name("password")).SendKeys("admin123");
+            driver.FindElement(By.XPath("//input[@placeholder='Username']")).SendKeys("Admin");
+            driver.FindElement(By.XPath("//input[@type='password']")).SendKeys("admin123");
             driver.FindElement(By.XPath("//button[@type='submit']")).Click();
-            string homePageLink = driver.Url;
-            Assert.That(homePageLink, Is.EqualTo("https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index%22))"));
-               
+            string actualUrl = driver.Url;
+            Assert.That(actualUrl, Is.EqualTo("https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"));
         }
-        public static object[] InvalidLoginData()
-        {
-            string[] DataSet1 = new string[2];
-            DataSet1[0] = "john";
-            DataSet1[1] = "john123";
-
-            string[] DataSet2 = new string[2];
-            DataSet2[0] = "peter";
-            DataSet2[1] = "peter123";
-
-            string[] DataSet3 = new string[2];
-            DataSet3[0] = "saul";
-            DataSet3[1] = "saul123";
-
-            object[] AllDataSet = new object[3];
-            AllDataSet[0] = DataSet1;
-            AllDataSet[1] = DataSet2;
-            AllDataSet[2] = DataSet3;
-
-            return AllDataSet;
-        }
-
-        [Test,TestCaseSource(nameof(InvalidLoginData))]
-
-       // [TestCase("ab","123","Invalid credential")]
-        //[TestCase("peter","@123","Invalid credential")]
-        //[TestCase("pet", "@12", "Invalid credential")]
-        public void InValidLoginTest(string username,string Password,string expectedError)
+        [Test, TestCaseSource(typeof(DataSource), nameof(DataSource.InvalidLoginData))]
+        public void InvalidLoginTest(string username, string password, string expectedError)
         {
             driver.FindElement(By.Name("username")).SendKeys(username);
-            driver.FindElement(By.Name("password")).SendKeys(Password);
-            driver.FindElement(By.XPath("//button[@type='submit']")).Click();
+            driver.FindElement(By.Name("password")).SendKeys(password);
+            driver.FindElement(By.XPath("//button[@type = 'submit']")).Click();
+            string actualError = driver.FindElement(By.XPath("//p[contains(normalize-space(),'cred')]")).Text;
 
-            string actualError =driver.FindElement(By.XPath("//div[@class='oxd-alert-content oxd-alert-content--error']")).Text;
-            Assert.That(actualError.Contains("expectedError"),"Assertion On Error Message");
-
-
-
-
+            Console.WriteLine(actualError);
+            Assert.That(actualError, Is.EqualTo(expectedError), "Assertion on error message");
+            Assert.That(true);
         }
     }
 }
