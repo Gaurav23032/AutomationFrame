@@ -22,7 +22,7 @@ namespace EmployeeManagement
             string actualUrl = driver.Url;
             Assert.That(actualUrl, Is.EqualTo("https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"));
         }
-        [Test, TestCaseSource(typeof(DataSource), nameof(DataSource.InvalidLoginData))]
+        [Test, TestCaseSource(typeof(DataSource), nameof(DataSource.InvalidLoginData2))]
         public void InvalidLoginTest(string username, string password, string expectedError)
         {
             driver.FindElement(By.Name("username")).SendKeys(username);
